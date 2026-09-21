@@ -1,1 +1,1 @@
-# transfer_airspeed_usd_gbp
+# transfer_usd_gbp
