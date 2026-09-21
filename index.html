@@ -3,146 +3,303 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>USD to GBP Converter</title>
-  <meta name="theme-color" content="#1a73e8">
+  <title>USD to GBP Rate Calculator</title>
+  <meta name="theme-color" content="#f472b6">
 
-  <!-- PWA Manifest for Installation -->
+  <!-- PWA Manifest for Native Web App Installability -->
   <link rel="manifest" href="data:application/manifest+json,{
-    %22name%22:%22USD%20to%20GBP%20Converter%22,
-    %22short_name%22:%22USD2GBP%22,
+    %22name%22:%22USD%20to%20GBP%20Rate%20Calculator%22,
+    %22short_name%22:%22RateCalc%22,
     %22start_url%22:%22.%22,
     %22display%22:%22standalone%22,
-    %22background_color%22:%22%23f8f9fa%22,
-    %22theme_color%22:%22%231a73e8%22,
-    %22icons%22:[{%22src%22:%22https://via.placeholder.com/192/1a73e8/ffffff?text=$%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22}]
+    %22background_color%22:%22%23fdf2f4%22,
+    %22theme_color%22:%22%23f472b6%22,
+    %22icons%22:[{%22src%22:%22https://via.placeholder.com/192/f472b6/ffffff?text=%C2%A3%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22}]
   }">
 
   <style>
     * {
       box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
     body {
-      background-color: #f8f9fa;
+      background-color: #fdf2f4;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       margin: 0;
       padding: 16px;
+      color: #4a3e43;
     }
     .card {
       background: #ffffff;
-      padding: 24px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 28px 24px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(244, 114, 182, 0.12);
       width: 100%;
-      max-width: 400px;
+      max-width: 380px;
+      border: 1px solid #fbcfe8;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .icon-badge {
+      width: 48px;
+      height: 48px;
+      background-color: #fce7f3;
+      color: #db2777;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px auto;
+      font-size: 1.3rem;
+      font-weight: bold;
     }
     h2 {
-      margin-top: 0;
-      color: #202124;
-      font-size: 1.4rem;
-      text-align: center;
+      margin: 0;
+      color: #831843;
+      font-size: 1.35rem;
+      font-weight: 700;
     }
+    p.subtitle {
+      margin: 4px 0 0 0;
+      font-size: 0.8rem;
+      color: #9d174d;
+      opacity: 0.8;
+    }
+
     .form-group {
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
     label {
       display: block;
-      font-size: 0.85rem;
-      color: #5f6368;
+      font-size: 0.82rem;
+      color: #9d174d;
       margin-bottom: 6px;
       font-weight: 600;
     }
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .currency-symbol {
+      position: absolute;
+      left: 14px;
+      color: #f472b6;
+      font-weight: 600;
+      font-size: 1.05rem;
+      pointer-events: none;
+    }
     input {
       width: 100%;
-      padding: 12px;
-      font-size: 1rem;
-      border: 1px solid #dadce0;
-      border-radius: 8px;
+      padding: 12px 14px 12px 32px;
+      font-size: 1.05rem;
+      color: #4a3e43;
+      border: 1.5px solid #fbcfe8;
+      border-radius: 12px;
       outline: none;
-      transition: border-color 0.2s;
+      background-color: #fffafc;
+      transition: all 0.2s ease-in-out;
+    }
+    input.no-symbol {
+      padding-left: 14px;
     }
     input:focus {
-      border-color: #1a73e8;
+      border-color: #f472b6;
+      background-color: #ffffff;
+      box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.2);
     }
-    .result-box {
-      margin-top: 20px;
-      padding: 16px;
-      background: #e8f0fe;
-      border-radius: 8px;
-      color: #1967d2;
+
+    .btn-calculate {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #f472b6 0%, #db2777 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(244, 114, 182, 0.35);
+      transition: all 0.2s ease-in-out;
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+    .btn-calculate:hover {
+      background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+      box-shadow: 0 6px 16px rgba(244, 114, 182, 0.45);
+      transform: translateY(-1px);
+    }
+    .btn-calculate:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 8px rgba(244, 114, 182, 0.3);
+    }
+
+    .result-group {
+      margin: 22px 0 18px 0;
+      background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+      border: 1px solid #fbcfe8;
+      border-radius: 14px;
+      padding: 18px 16px;
       text-align: center;
+      min-height: 96px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .result-label {
+      font-size: 0.78rem;
+      color: #9d174d;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
     }
     .result-value {
-      font-size: 1.6rem;
-      font-weight: bold;
-      margin-top: 4px;
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #be185d;
+      margin-top: 6px;
+      word-break: break-all;
     }
-    .rate-text {
-      font-size: 0.85rem;
-      color: #5f6368;
-      text-align: center;
-      margin-top: 12px;
+    .error-text {
+      font-size: 0.9rem;
+      color: #9f1239;
+      font-weight: 600;
+    }
+    .inverse-rate {
+      font-size: 0.82rem;
+      color: #9f1239;
+      margin-top: 6px;
+      opacity: 0.85;
+      font-weight: 500;
     }
   </style>
 </head>
 <body>
 
   <div class="card">
-    <h2>USD to GBP Converter</h2>
+    <div class="header">
+      <div class="icon-badge">$⇄£</div>
+      <h2>USD to GBP Converter</h2>
+      <p class="subtitle">Calculate conversion rate dynamically</p>
+    </div>
 
+    <!-- Field 1: Amount USD -->
     <div class="form-group">
       <label for="usd">Amount (USD $)</label>
-      <input type="number" id="usd" value="16000" step="any" oninput="convert()">
+      <div class="input-wrapper">
+        <span class="currency-symbol">$</span>
+        <input type="number" id="usd" value="" step="any">
+      </div>
     </div>
 
+    <!-- Field 2: Converted Amount GBP -->
     <div class="form-group">
-      <label for="rate">Exchange Rate (1 USD = ? GBP)</label>
-      <input type="number" id="rate" value="0.747995" step="any" oninput="convert()">
+      <label for="gbp">Converted Amount (GBP £)</label>
+      <div class="input-wrapper">
+        <span class="currency-symbol">£</span>
+        <input type="number" id="gbp" value="" step="any">
+      </div>
     </div>
 
+    <!-- Field 3: Decimal Places -->
     <div class="form-group">
       <label for="decimals">Decimal Places</label>
-      <input type="number" id="decimals" value="5" min="0" max="10" oninput="convert()">
+      <input type="number" id="decimals" class="no-symbol" value="5" min="0" max="10">
     </div>
 
-    <div class="result-box">
-      <label>Converted Amount (GBP)</label>
-      <div class="result-value" id="gbp-result">£0.00</div>
-    </div>
+    <!-- Calculate Button -->
+    <button type="button" class="btn-calculate" onclick="calculateRate()">Calculate Rate</button>
 
-    <div class="rate-text" id="rate-display"></div>
+    <!-- Display Calculated Rate -->
+    <div class="result-group">
+      <div class="result-label" id="result-label">Calculated Rate</div>
+      <div class="result-value" id="rate-result">Enter amounts &amp; click calculate</div>
+      <div class="inverse-rate" id="inverse-result"></div>
+    </div>
   </div>
 
   <script>
-    function convert() {
-      const usd = parseFloat(document.getElementById('usd').value) || 0;
-      const rate = parseFloat(document.getElementById('rate').value) || 0;
-      const decimals = parseInt(document.getElementById('decimals').value) || 0;
+    function calculateRate() {
+      const usdInput = document.getElementById('usd').value;
+      const gbpInput = document.getElementById('gbp').value;
+      const decimalsInput = parseInt(document.getElementById('decimals').value);
 
-      const gbp = usd * rate;
+      const usd = parseFloat(usdInput);
+      const gbp = parseFloat(gbpInput);
 
-      // Update Converted GBP value
-      document.getElementById('gbp-result').innerText = 
-        '£' + gbp.toFixed(decimals);
+      // Clamp decimal places between 0 and 10
+      const decimals = isNaN(decimalsInput) ? 5 : Math.max(0, Math.min(10, decimalsInput));
 
-      // Display Rate formatted to specified decimals
-      document.getElementById('rate-display').innerText = 
-        `Rate: 1 USD = ${rate.toFixed(decimals)} GBP`;
+      const rateResultEl = document.getElementById('rate-result');
+      const inverseResultEl = document.getElementById('inverse-result');
+      const resultLabelEl = document.getElementById('result-label');
+
+      // Check if fields are empty
+      if (usdInput.trim() === '' || gbpInput.trim() === '') {
+        resultLabelEl.style.display = 'block';
+        rateResultEl.className = 'result-value';
+        rateResultEl.innerText = "Enter amounts above";
+        inverseResultEl.innerText = "";
+        return;
+      }
+
+      // Division by zero or non-number error handling
+      if (isNaN(usd) || isNaN(gbp) || usd === 0 || gbp === 0) {
+        resultLabelEl.style.display = 'none';
+        rateResultEl.className = 'error-text';
+        rateResultEl.innerText = "Please enter non-zero values for both amounts";
+        inverseResultEl.innerText = "";
+        return;
+      }
+
+      // Reset state for valid calculation
+      resultLabelEl.style.display = 'block';
+      rateResultEl.className = 'result-value';
+
+      // Conversion Rate = GBP / USD
+      const rate = gbp / usd;
+      const inverseRate = usd / gbp;
+
+      // Format outputs with requested decimal precision
+      const formattedRate = rate.toFixed(decimals);
+      const formattedInverse = inverseRate.toFixed(decimals);
+
+      rateResultEl.innerText = `1 USD = ${formattedRate} GBP`;
+      inverseResultEl.innerText = `1 GBP = ${formattedInverse} USD`;
     }
 
-    // Run calculation on load
-    convert();
+    // Allow pressing Enter key inside inputs to trigger calculation
+    document.querySelectorAll('input').forEach(input => {
+      input.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+          calculateRate();
+        }
+      });
+    });
 
-    // Register Service Worker for PWA (Offline Capability)
-    if ('serviceWorker' in navigator) {
-      const swCode = `
-        self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
-      `;
-      const blob = new Blob([swCode], { type: 'text/javascript' });
-      navigator.serviceWorker.register(URL.createObjectURL(blob));
+    // Register Service Worker for PWA (with safe checks for sandbox/preview contexts)
+    if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+      try {
+        const swCode = `
+          self.addEventListener('fetch', e => {
+            e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+          });
+        `;
+        const blob = new Blob([swCode], { type: 'text/javascript' });
+        const swUrl = URL.createObjectURL(blob);
+        
+        navigator.serviceWorker.register(swUrl).catch(err => {
+          // Gracefully handle registration failure in preview/sandbox environments
+          console.warn('Service Worker registration skipped in preview context:', err.message);
+        });
+      } catch (e) {
+        console.warn('Service Worker initialization skipped:', e);
+      }
     }
   </script>
 
