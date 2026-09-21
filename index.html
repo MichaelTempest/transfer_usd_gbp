@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>USD to GBP Converter</title>
+  <meta name="theme-color" content="#1a73e8">
+
+  <!-- PWA Manifest for Installation -->
+  <link rel="manifest" href="data:application/manifest+json,{
+    %22name%22:%22USD%20to%20GBP%20Converter%22,
+    %22short_name%22:%22USD2GBP%22,
+    %22start_url%22:%22.%22,
+    %22display%22:%22standalone%22,
+    %22background_color%22:%22%23f8f9fa%22,
+    %22theme_color%22:%22%231a73e8%22,
+    %22icons%22:[{%22src%22:%22https://via.placeholder.com/192/1a73e8/ffffff?text=$%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22}]
+  }">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    body {
+      background-color: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 16px;
+    }
+    .card {
+      background: #ffffff;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    h2 {
+      margin-top: 0;
+      color: #202124;
+      font-size: 1.4rem;
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: #5f6368;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1px solid #dadce0;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus {
+      border-color: #1a73e8;
+    }
+    .result-box {
+      margin-top: 20px;
+      padding: 16px;
+      background: #e8f0fe;
+      border-radius: 8px;
+      color: #1967d2;
+      text-align: center;
+    }
+    .result-value {
+      font-size: 1.6rem;
+      font-weight: bold;
+      margin-top: 4px;
+    }
+    .rate-text {
+      font-size: 0.85rem;
+      color: #5f6368;
+      text-align: center;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>USD to GBP Converter</h2>
+
+    <div class="form-group">
+      <label for="usd">Amount (USD $)</label>
+      <input type="number" id="usd" value="16000" step="any" oninput="convert()">
+    </div>
+
+    <div class="form-group">
+      <label for="rate">Exchange Rate (1 USD = ? GBP)</label>
+      <input type="number" id="rate" value="0.747995" step="any" oninput="convert()">
+    </div>
+
+    <div class="form-group">
+      <label for="decimals">Decimal Places</label>
+      <input type="number" id="decimals" value="5" min="0" max="10" oninput="convert()">
+    </div>
+
+    <div class="result-box">
+      <label>Converted Amount (GBP)</label>
+      <div class="result-value" id="gbp-result">£0.00</div>
+    </div>
+
+    <div class="rate-text" id="rate-display"></div>
+  </div>
+
+  <script>
+    function convert() {
+      const usd = parseFloat(document.getElementById('usd').value) || 0;
+      const rate = parseFloat(document.getElementById('rate').value) || 0;
+      const decimals = parseInt(document.getElementById('decimals').value) || 0;
+
+      const gbp = usd * rate;
+
+      // Update Converted GBP value
+      document.getElementById('gbp-result').innerText = 
+        '£' + gbp.toFixed(decimals);
+
+      // Display Rate formatted to specified decimals
+      document.getElementById('rate-display').innerText = 
+        `Rate: 1 USD = ${rate.toFixed(decimals)} GBP`;
+    }
+
+    // Run calculation on load
+    convert();
+
+    // Register Service Worker for PWA (Offline Capability)
+    if ('serviceWorker' in navigator) {
+      const swCode = `
+        self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
+      `;
+      const blob = new Blob([swCode], { type: 'text/javascript' });
+      navigator.serviceWorker.register(URL.createObjectURL(blob));
+    }
+  </script>
+
+</body>
+</html>
